@@ -119,8 +119,8 @@ int main()
     }
     pano_buffer_p=0;
 
-    uint64_t sky_w=500;
-    uint64_t sky_h=500;
+    uint64_t sky_w=pano_width/4;
+    uint64_t sky_h=sky_w;
     int sky_quality=100;
     JSAMPLE *sky_1=malloc(sky_w*sky_h*3);
     JSAMPLE *sky_2=malloc(sky_w*sky_h*3);
@@ -136,17 +136,22 @@ int main()
     {
         for(y=0;y<sky_h;y++)
         {
-            xx=(double)x/(double)sky_w;
-            yy=(double)y/(double)sky_h;
             //1
+            xx=(double)(sky_w-x)/(double)sky_w;
+            yy=(double)(sky_h-y)/(double)sky_h;
             px=(fmod(atan2(1-2*xx, -1)/(2*M_PI),1))*pano_width;
             py=(fmod(acos((2*yy-1)/sqrt(1+pow((2*yy-1),2)+pow((2*xx-1),2)))/M_PI,1))*pano_height;
             memcpy(sky_1+(y*sky_w*3+x*3),pano_buffer+(py*pano_width*pano_components+px*pano_components),3);
             //2
+            xx=(double)(x)/(double)sky_w;
+            yy=(double)(sky_h-y)/(double)sky_h;
             px=(fmod(atan2(1-2*xx, 1)/(2*M_PI),1))*pano_width;
             py=(fmod(acos((2*yy-1)/sqrt(1+pow((2*yy-1),2)+pow((2*xx-1),2)))/M_PI,1))*pano_height;
             memcpy(sky_2+(y*sky_w*3+x*3),pano_buffer+(py*pano_width*pano_components+px*pano_components),3);
+
             //3
+            yy=(double)(sky_w-x)/(double)sky_w;
+            xx=(double)(sky_h-y)/(double)sky_h;
             px=(fmod(atan2(1-2*yy, 1-2*xx)/(2*M_PI),1))*pano_width;
             py=(fmod(acos(1/sqrt(1+pow((2*xx-1),2)+pow((2*yy-1),2)))/M_PI,1))*pano_height;
             memcpy(sky_3+(y*sky_w*3+x*3),pano_buffer+(py*pano_width*pano_components+px*pano_components),3);
@@ -154,16 +159,19 @@ int main()
             px=(fmod(atan2(1-2*yy, 1-2*xx)/(2*M_PI),1))*pano_width;
             py=(fmod(acos(-1/sqrt(1+pow((2*xx-1),2)+pow((2*yy-1),2)))/M_PI,1))*pano_height;
             memcpy(sky_4+(y*sky_w*3+x*3),pano_buffer+(py*pano_width*pano_components+px*pano_components),3);
+
             //5
+            xx=(double)(x)/(double)sky_w;
+            yy=(double)(sky_h-y)/(double)sky_h;
             px=(fmod(atan2(-1, 1-2*xx)/(2*M_PI),1))*pano_width;
             py=(fmod(acos((2*yy-1)/sqrt(1+pow((2*xx-1),2)+pow((2*yy-1),2)))/M_PI,1))*pano_height;
             memcpy(sky_5+(y*sky_w*3+x*3),pano_buffer+(py*pano_width*pano_components+px*pano_components),3);
             //6
+            xx=(double)(sky_w-x)/(double)sky_w;
+            yy=(double)(sky_h-y)/(double)sky_h;
             px=(fmod(atan2(1, 1-2*xx)/(2*M_PI),1))*pano_width;
             py=(fmod(acos((2*yy-1)/sqrt(1+pow((2*xx-1),2)+pow((2*yy-1),2)))/M_PI,1))*pano_height;
             memcpy(sky_6+(y*sky_w*3+x*3),pano_buffer+(py*pano_width*pano_components+px*pano_components),3);
-
-            //printf("x=%d,y=%d,px=%d,py=%d\n",x,y,px,py);
         }
     }
     write_JPEG_file("f.jpg",sky_quality,sky_1,sky_w,sky_h);
@@ -173,8 +181,12 @@ int main()
     write_JPEG_file("l.jpg",sky_quality,sky_5,sky_w,sky_h);
     write_JPEG_file("r.jpg",sky_quality,sky_6,sky_w,sky_h);
 
-    //write_JPEG_file("b.jpg",10,pano_buffer,pano_width,pano_height);
-
+    free(sky_1);
+    free(sky_2);
+    free(sky_3);
+    free(sky_4);
+    free(sky_5);
+    free(sky_6);
     free(pano_buffer);
     pano_buffer=0;
     //========
