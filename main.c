@@ -7,6 +7,8 @@
 
 #include <math.h>
 
+#define DEBUG
+
 struct my_error_mgr {
   struct jpeg_error_mgr pub;    /* "public" fields */
   jmp_buf setjmp_buffer;        /* for return to caller */
@@ -72,6 +74,14 @@ write_JPEG_file (char *filename, int quality,JSAMPLE *image_buffer,int image_wid
 
 int main()
 {
+
+#ifdef DEBUG
+    //计时开始
+    struct timeval tpstart,tpend;
+    float timeuse;
+    gettimeofday(&tpstart,NULL);
+#endif
+
     char *filename="a.jpg";
 
     FILE *infile;                 /* source file */
@@ -95,6 +105,7 @@ int main()
         return 2;
     }
 
+    //准备
     jpeg_create_decompress(&cinfo);
     jpeg_stdio_src(&cinfo, infile);
     (void) jpeg_read_header(&cinfo, TRUE);
@@ -103,14 +114,14 @@ int main()
     row_stride = cinfo.output_width * cinfo.output_components;
     buffer = (*cinfo.mem->alloc_sarray) ((j_common_ptr) &cinfo, JPOOL_IMAGE, row_stride, 1);
 
-    //=========
-
+    //获取参数申请内存
     int pano_width=cinfo.output_width;
     int pano_height=cinfo.output_height;
     int pano_components=cinfo.output_components;
     JSAMPLE *pano_buffer=malloc(pano_width*pano_height*pano_components);
     JSAMPLE *pano_buffer_p=pano_buffer;
 
+    //开始读取
     while (cinfo.output_scanline < cinfo.output_height) {
         (void) jpeg_read_scanlines(&cinfo, buffer, 1);
         memcpy(pano_buffer_p,buffer[0],row_stride);
@@ -119,6 +130,18 @@ int main()
     }
     pano_buffer_p=0;
 
+#ifdef DEBUG
+    //读取完毕计时
+    gettimeofday(&tpend,NULL);
+    timeuse=1000000*(tpend.tv_sec-tpstart.tv_sec)+tpend.tv_usec-tpstart.tv_usec;
+    timeuse/=1000000;
+    //输出耗时
+    fprintf(stderr,"读取完毕计时: %fs\n",timeuse);
+    //重新计时开始
+    gettimeofday(&tpstart,NULL);
+#endif
+
+    //开始映射生成
     uint64_t sky_w=pano_width/4;
     uint64_t sky_h=sky_w;
     int sky_quality=100;
@@ -174,6 +197,19 @@ int main()
             memcpy(sky_6+(y*sky_w*3+x*3),pano_buffer+(py*pano_width*pano_components+px*pano_components),3);
         }
     }
+
+#ifdef DEBUG
+    //生成完毕计时
+    gettimeofday(&tpend,NULL);
+    timeuse=1000000*(tpend.tv_sec-tpstart.tv_sec)+tpend.tv_usec-tpstart.tv_usec;
+    timeuse/=1000000;
+    //输出耗时
+    fprintf(stderr,"生成完毕计时: %fs\n",timeuse);
+    //重新计时开始
+    gettimeofday(&tpstart,NULL);
+#endif
+
+    //开始保存
     write_JPEG_file("f.jpg",sky_quality,sky_1,sky_w,sky_h);
     write_JPEG_file("b.jpg",sky_quality,sky_2,sky_w,sky_h);
     write_JPEG_file("u.jpg",sky_quality,sky_3,sky_w,sky_h);
@@ -194,6 +230,15 @@ int main()
     (void) jpeg_finish_decompress(&cinfo);
     jpeg_destroy_decompress(&cinfo);
     fclose(infile);
+
+#ifdef DEBUG
+    //保存结束
+    gettimeofday(&tpend,NULL);
+    timeuse=1000000*(tpend.tv_sec-tpstart.tv_sec)+tpend.tv_usec-tpstart.tv_usec;
+    timeuse/=1000000;
+    //输出耗时
+    fprintf(stderr,"保存完毕计时: %fs\n",timeuse);
+#endif
 
     return 0;
 }
