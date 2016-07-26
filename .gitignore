@@ -8,3 +8,4 @@ CMakeLists.txt.user.*
 
 #VS Code
 .vscode
+build

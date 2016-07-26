@@ -1,10 +1,36 @@
+/*
+ * example.c
+ *
+ * This file illustrates how to use the IJG code as a subroutine library
+ * to read or write JPEG image files.  You should look at this code in
+ * conjunction with the documentation file libjpeg.txt.
+ *
+ * This code will not do anything useful as-is, but it may be helpful as a
+ * skeleton for constructing routines that call the JPEG library.
+ *
+ * We present these routines in the same coding style used in the JPEG code
+ * (ANSI function definitions, etc); but you are of course free to code your
+ * routines in a different style if you prefer.
+ */
+
 #include <stdio.h>
-#include <stdint.h>
 
-#include "jconfig.h"
+/*
+ * Include file for users of JPEG library.
+ * You will need to have included system headers that define at least
+ * the typedefs FILE and size_t before you can include jpeglib.h.
+ * (stdio.h is sufficient on ANSI-conforming systems.)
+ * You may also wish to include "jerror.h".
+ */
+
 #include "jpeglib.h"
-#include <setjmp.h>
 
+/*
+ * <setjmp.h> is used for the optional error recovery mechanism shown in
+ * the second part of the example.
+ */
+
+#include <setjmp.h>
 
 
 
@@ -36,8 +62,15 @@ extern JSAMPLE *image_buffer;   /* Points to large array of R,G,B-order data */
 extern int image_height;        /* Number of rows in image */
 extern int image_width;         /* Number of columns in image */
 
-int image_width, image_height;
-char *image_buffer;
+JSAMPLE *image_buffer;   /* Points to large array of R,G,B-order data */
+int image_height;        /* Number of rows in image */
+int image_width;         /* Number of columns in image */
+
+void put_scanline_someplace(char *buf, int count)
+{
+        printf("count = %d\n", count);
+        return;
+}
 
 /*
  * Sample routine for JPEG compression.  We assume that the target file name
@@ -134,7 +167,7 @@ write_JPEG_file (char *filename, int quality)
      * Here the array is only one element long, but you could pass
      * more than one scanline at a time if that's more convenient.
      */
-    row_pointer[0] = &image_buffer[cinfo.next_scanline * row_stride];
+    row_pointer[0] = & image_buffer[cinfo.next_scanline * row_stride];
     (void) jpeg_write_scanlines(&cinfo, row_pointer, 1);
   }
 
@@ -353,6 +386,7 @@ read_JPEG_file (char *filename)
     (void) jpeg_read_scanlines(&cinfo, buffer, 1);
     /* Assume put_scanline_someplace wants a pointer and sample count. */
     put_scanline_someplace(buffer[0], row_stride);
+
   }
 
   /* Step 7: Finish decompression */
@@ -407,11 +441,6 @@ read_JPEG_file (char *filename)
  * On some systems you may need to set up a signal handler to ensure that
  * temporary files are deleted if the program is interrupted.  See libjpeg.txt.
  */
-
-
-
-
-
 
 
 int main()

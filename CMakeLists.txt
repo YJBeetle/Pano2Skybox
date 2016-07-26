@@ -3,13 +3,13 @@ cmake_minimum_required(VERSION 2.8)
 aux_source_directory(. SRC_LIST)
 
 #OS X port
-include_directories(/opt/local/include)
-include_directories(/opt/local/lib/glib-2.0/include)
-link_directories(/opt/local/lib/)
+#include_directories(/opt/local/include)
+#include_directories(/opt/local/lib/glib-2.0/include)
+#link_directories(/opt/local/lib/)
 
 #OS X brew
 include_directories(/usr/local/opt/jpeg-turbo/include/)
-include_directories(/usr/local/opt/glib/lib/glib-2.0/include)
+#include_directories(/usr/local/opt/glib/lib/glib-2.0/include)
 link_directories(/usr/local/lib)
 
 #Win MSYS2
@@ -23,5 +23,5 @@ link_directories(/usr/lib/)
 
 add_executable(${PROJECT_NAME} ${SRC_LIST})
 
-target_link_libraries(${PROJECT_NAME} turbojpeg)
+target_link_libraries(${PROJECT_NAME} jpeg)
 
