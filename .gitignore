@@ -1,0 +1,10 @@
+#OS X
+.DS_Store
+
+#Qt Creator
+CMakeLists.txt.user
+CMakeLists.txt.user.*
+*.autosave
+
+#VS Code
+.vscode
