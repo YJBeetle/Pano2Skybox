@@ -131,8 +131,8 @@ main()
     buffer = (*cinfo.mem->alloc_sarray) ((j_common_ptr) & cinfo, JPOOL_IMAGE, row_stride, 1);
 
     //获取参数申请内存
-    int        pano_width = cinfo.output_width;
-    int        pano_height = cinfo.output_height;
+    uint32_t        pano_width = cinfo.output_width;
+    uint32_t        pano_height = cinfo.output_height;
     int        pano_components = cinfo.output_components;
     JSAMPLE        *pano_buffer = malloc(pano_width * pano_height * pano_components);
     JSAMPLE        *pano_buffer_p = pano_buffer;
@@ -181,7 +181,7 @@ main()
     JSAMPLE     *sky_u = malloc(sky_w * sky_h * 3);
     JSAMPLE     *sky_d = malloc(sky_w * sky_h * 3);
 
-    printf("sky图片大小： %dpx x %dpx , 质量：%d\n",sky_w,sky_h,sky_quality);
+    printf("sky图片大小： %lldpx x %lldpx , 质量：%d\n",sky_w,sky_h,sky_quality);
 
     int64_t     sx, sy, px, py;
     float       sxf, syf, pxf, pyf;
