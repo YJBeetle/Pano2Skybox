@@ -9,6 +9,13 @@
 
 #define DEBUG
 
+
+double fmod_wrap(const double v, const double w)
+{
+    return v<0.?fmod(v,w)+w:fmod(v,w);
+}
+
+
 struct my_error_mgr {
   struct jpeg_error_mgr pub;    /* "public" fields */
   jmp_buf setjmp_buffer;        /* for return to caller */
@@ -142,7 +149,7 @@ int main()
 #endif
 
     //开始映射生成
-    uint64_t sky_w=pano_width/4;
+    uint64_t sky_w=3353;
     uint64_t sky_h=sky_w;
     int sky_quality=100;
     JSAMPLE *sky_1=malloc(sky_w*sky_h*3);
@@ -152,7 +159,7 @@ int main()
     JSAMPLE *sky_5=malloc(sky_w*sky_h*3);
     JSAMPLE *sky_6=malloc(sky_w*sky_h*3);
 
-    uint64_t x,y,px,py;
+    int64_t x,y,px,py;
     double xx,yy;
 
     for(x=0;x<sky_w;x++)
@@ -162,38 +169,41 @@ int main()
             //1
             xx=(double)(sky_w-x)/(double)sky_w;
             yy=(double)(sky_h-y)/(double)sky_h;
-            px=(fmod(atan2(1-2*xx, -1)/(2*M_PI),1))*pano_width;
-            py=(fmod(acos((2*yy-1)/sqrt(1+pow((2*yy-1),2)+pow((2*xx-1),2)))/M_PI,1))*pano_height;
+            px=(fmod_wrap(atan2(1-2*xx, -1)/(2*M_PI),1))*pano_width;
+            py=(fmod_wrap(acos((2*yy-1)/sqrt(1+pow((2*yy-1),2)+pow((2*xx-1),2)))/M_PI,1))*pano_height;
             memcpy(sky_1+(y*sky_w*3+x*3),pano_buffer+(py*pano_width*pano_components+px*pano_components),3);
             //2
             xx=(double)(x)/(double)sky_w;
             yy=(double)(sky_h-y)/(double)sky_h;
-            px=(fmod(atan2(1-2*xx, 1)/(2*M_PI),1))*pano_width;
-            py=(fmod(acos((2*yy-1)/sqrt(1+pow((2*yy-1),2)+pow((2*xx-1),2)))/M_PI,1))*pano_height;
+            px=(fmod_wrap(atan2(1-2*xx, 1)/(2*M_PI),1))*pano_width;
+            py=(fmod_wrap(acos((2*yy-1)/sqrt(1+pow((2*yy-1),2)+pow((2*xx-1),2)))/M_PI,1))*pano_height;
             memcpy(sky_2+(y*sky_w*3+x*3),pano_buffer+(py*pano_width*pano_components+px*pano_components),3);
+
+            if(px<0)
+                printf("px:%d\n",px);
 
             //3
             yy=(double)(sky_w-x)/(double)sky_w;
             xx=(double)(sky_h-y)/(double)sky_h;
-            px=(fmod(atan2(1-2*yy, 1-2*xx)/(2*M_PI),1))*pano_width;
-            py=(fmod(acos(1/sqrt(1+pow((2*xx-1),2)+pow((2*yy-1),2)))/M_PI,1))*pano_height;
+            px=(fmod_wrap(atan2(1-2*yy, 1-2*xx)/(2*M_PI),1))*pano_width;
+            py=(fmod_wrap(acos(1/sqrt(1+pow((2*xx-1),2)+pow((2*yy-1),2)))/M_PI,1))*pano_height;
             memcpy(sky_3+(y*sky_w*3+x*3),pano_buffer+(py*pano_width*pano_components+px*pano_components),3);
             //4
-            px=(fmod(atan2(1-2*yy, 1-2*xx)/(2*M_PI),1))*pano_width;
-            py=(fmod(acos(-1/sqrt(1+pow((2*xx-1),2)+pow((2*yy-1),2)))/M_PI,1))*pano_height;
+            px=(fmod_wrap(atan2(1-2*yy, 1-2*xx)/(2*M_PI),1))*pano_width;
+            py=(fmod_wrap(acos(-1/sqrt(1+pow((2*xx-1),2)+pow((2*yy-1),2)))/M_PI,1))*pano_height;
             memcpy(sky_4+(y*sky_w*3+x*3),pano_buffer+(py*pano_width*pano_components+px*pano_components),3);
 
             //5
             xx=(double)(x)/(double)sky_w;
             yy=(double)(sky_h-y)/(double)sky_h;
-            px=(fmod(atan2(-1, 1-2*xx)/(2*M_PI),1))*pano_width;
-            py=(fmod(acos((2*yy-1)/sqrt(1+pow((2*xx-1),2)+pow((2*yy-1),2)))/M_PI,1))*pano_height;
+            px=(fmod_wrap(atan2(-1, 1-2*xx)/(2*M_PI),1))*pano_width;
+            py=(fmod_wrap(acos((2*yy-1)/sqrt(1+pow((2*xx-1),2)+pow((2*yy-1),2)))/M_PI,1))*pano_height;
             memcpy(sky_5+(y*sky_w*3+x*3),pano_buffer+(py*pano_width*pano_components+px*pano_components),3);
             //6
             xx=(double)(sky_w-x)/(double)sky_w;
             yy=(double)(sky_h-y)/(double)sky_h;
-            px=(fmod(atan2(1, 1-2*xx)/(2*M_PI),1))*pano_width;
-            py=(fmod(acos((2*yy-1)/sqrt(1+pow((2*xx-1),2)+pow((2*yy-1),2)))/M_PI,1))*pano_height;
+            px=(fmod_wrap(atan2(1, 1-2*xx)/(2*M_PI),1))*pano_width;
+            py=(fmod_wrap(acos((2*yy-1)/sqrt(1+pow((2*xx-1),2)+pow((2*yy-1),2)))/M_PI,1))*pano_height;
             memcpy(sky_6+(y*sky_w*3+x*3),pano_buffer+(py*pano_width*pano_components+px*pano_components),3);
         }
     }
