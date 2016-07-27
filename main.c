@@ -137,6 +137,8 @@ main()
     JSAMPLE        *pano_buffer = malloc(pano_width * pano_height * pano_components);
     JSAMPLE        *pano_buffer_p = pano_buffer;
 
+    printf("Pano图片大小： %dpx x %dpx \n",pano_width,pano_height);
+
 #ifdef DEBUG
     //初始化完毕计时
     gettimeofday(&tpend, NULL);
@@ -169,18 +171,20 @@ main()
 #endif
 
     //开始映射生成
-    uint64_t sky_w = 3353;
+    uint64_t    sky_w = sqrt(pano_width*pano_height/6.);
     uint64_t    sky_h = sky_w;
-    int        sky_quality = 100;
-    JSAMPLE        *sky_f = malloc(sky_w * sky_h * 3);
-    JSAMPLE        *sky_b = malloc(sky_w * sky_h * 3);
-    JSAMPLE        *sky_l = malloc(sky_w * sky_h * 3);
-    JSAMPLE        *sky_r = malloc(sky_w * sky_h * 3);
-    JSAMPLE        *sky_u = malloc(sky_w * sky_h * 3);
-    JSAMPLE        *sky_d = malloc(sky_w * sky_h * 3);
+    int         sky_quality = 100;
+    JSAMPLE     *sky_f = malloc(sky_w * sky_h * 3);
+    JSAMPLE     *sky_b = malloc(sky_w * sky_h * 3);
+    JSAMPLE     *sky_l = malloc(sky_w * sky_h * 3);
+    JSAMPLE     *sky_r = malloc(sky_w * sky_h * 3);
+    JSAMPLE     *sky_u = malloc(sky_w * sky_h * 3);
+    JSAMPLE     *sky_d = malloc(sky_w * sky_h * 3);
 
-    int64_t        x     , y, px, py;
-    float        xx      , yy;
+    printf("sky图片大小： %dpx x %dpx , 质量：%d\n",sky_w,sky_h,sky_quality);
+
+    int64_t     x, y, px, py;
+    float       xx, yy;
 
     for (x = 0; x < sky_w; x++) {
         for (y = 0; y < sky_h; y++) {
