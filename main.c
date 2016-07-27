@@ -183,52 +183,52 @@ main()
 
     printf("sky图片大小： %dpx x %dpx , 质量：%d\n",sky_w,sky_h,sky_quality);
 
-    int64_t     x, y, px, py;
-    float       xx, yy;
+    int64_t     sx, sy, px, py;
+    float       sxf, syf, pxf, pyf;
 
-    for (x = 0; x < sky_w; x++) {
-        for (y = 0; y < sky_h; y++) {
+    for (sx = 0; sx < sky_w; sx++) {
+        for (sy = 0; sy < sky_h; sy++) {
             //front
-            xx = (float)(sky_w - x) / (float)sky_w;
-            yy = (float)(sky_h - y) / (float)sky_h;
-            px = (fmodf_wrap(atan2f(1 - 2 * xx, -1) / (2 * (float)M_PI), 1)) * pano_width;
-            py = (fmodf_wrap(acosf((2 * yy - 1) / sqrtf(1 + powf((2 * yy - 1), 2) + powf((2 * xx - 1), 2))) / (float)M_PI, 1)) * pano_height;
-            memcpy(sky_f + (y * sky_w * 3 + x * 3), pano_buffer + (py * pano_width * pano_components + px * pano_components), 3);
+            sxf = (float)(sky_w - sx) / (float)sky_w;
+            syf = (float)(sky_h - sy) / (float)sky_h;
+            px = (fmodf_wrap(atan2f(1 - 2 * sxf, -1) / (2 * (float)M_PI), 1)) * pano_width;
+            py = (fmodf_wrap(acosf((2 * syf - 1) / sqrtf(1 + powf((2 * syf - 1), 2) + powf((2 * sxf - 1), 2))) / (float)M_PI, 1)) * pano_height;
+            memcpy(sky_f + (sy * sky_w * 3 + sx * 3), pano_buffer + (py * pano_width * pano_components + px * pano_components), 3);
 
             //back
-            xx = (float)(x) / (float)sky_w;
-            //yy = (float)(sky_h - y) / (float)sky_h;
-            px = (fmodf_wrap(atan2f(1 - 2 * xx, 1) / (2 * (float)M_PI), 1)) * pano_width;
-            //py = (fmodf_wrap(acosf((2 * yy - 1) / sqrtf(1 + powf((2 * yy - 1), 2) + powf((2 * xx - 1), 2))) / (float)M_PI, 1)) * pano_height;
-            memcpy(sky_b + (y * sky_w * 3 + x * 3), pano_buffer + (py * pano_width * pano_components + px * pano_components), 3);
+            sxf = (float)(sx) / (float)sky_w;
+            //syf = (float)(sky_h - sy) / (float)sky_h;
+            px = (fmodf_wrap(atan2f(1 - 2 * sxf, 1) / (2 * (float)M_PI), 1)) * pano_width;
+            //py = (fmodf_wrap(acosf((2 * syf - 1) / sqrtf(1 + powf((2 * syf - 1), 2) + powf((2 * sxf - 1), 2))) / (float)M_PI, 1)) * pano_height;
+            memcpy(sky_b + (sy * sky_w * 3 + sx * 3), pano_buffer + (py * pano_width * pano_components + px * pano_components), 3);
 
             //left
-            //xx = (float)(x) / (float)sky_w;
-            //yy = (float)(sky_h - y) / (float)sky_h;
-            px = (fmodf_wrap(atan2f(-1, 1 - 2 * xx) / (2 * (float)M_PI), 1)) * pano_width;
-            py = (fmodf_wrap(acosf((2 * yy - 1) / sqrtf(1 + powf((2 * xx - 1), 2) + powf((2 * yy - 1), 2))) / (float)M_PI, 1)) * pano_height;
-            memcpy(sky_l + (y * sky_w * 3 + x * 3), pano_buffer + (py * pano_width * pano_components + px * pano_components), 3);
+            //sxf = (float)(x) / (float)sky_w;
+            //syf = (float)(sky_h - sy) / (float)sky_h;
+            px = (fmodf_wrap(atan2f(-1, 1 - 2 * sxf) / (2 * (float)M_PI), 1)) * pano_width;
+            py = (fmodf_wrap(acosf((2 * syf - 1) / sqrtf(1 + powf((2 * sxf - 1), 2) + powf((2 * syf - 1), 2))) / (float)M_PI, 1)) * pano_height;
+            memcpy(sky_l + (sy * sky_w * 3 + sx * 3), pano_buffer + (py * pano_width * pano_components + px * pano_components), 3);
 
             //right
-            xx = (float)(sky_w - x) / (float)sky_w;
-            //yy = (float)(sky_h - y) / (float)sky_h;
-            px = (fmodf_wrap(atan2f(1, 1 - 2 * xx) / (2 * (float)M_PI), 1)) * pano_width;
-            //py = (fmodf_wrap(acosf((2 * yy - 1) / sqrtf(1 + powf((2 * xx - 1), 2) + powf((2 * yy - 1), 2))) / (float)M_PI, 1)) * pano_height;
-            memcpy(sky_r + (y * sky_w * 3 + x * 3), pano_buffer + (py * pano_width * pano_components + px * pano_components), 3);
+            sxf = (float)(sky_w - sx) / (float)sky_w;
+            //syf = (float)(sky_h - sy) / (float)sky_h;
+            px = (fmodf_wrap(atan2f(1, 1 - 2 * sxf) / (2 * (float)M_PI), 1)) * pano_width;
+            //py = (fmodf_wrap(acosf((2 * syf - 1) / sqrtf(1 + powf((2 * sxf - 1), 2) + powf((2 * syf - 1), 2))) / (float)M_PI, 1)) * pano_height;
+            memcpy(sky_r + (sy * sky_w * 3 + sx * 3), pano_buffer + (py * pano_width * pano_components + px * pano_components), 3);
 
             //up
-            yy = (float)(sky_w - x) / (float)sky_w;
-            xx = (float)(sky_h - y) / (float)sky_h;
-            px = (fmodf_wrap(atan2f(1 - 2 * yy, 1 - 2 * xx) / (2 * (float)M_PI), 1)) * pano_width;
-            py = (fmodf_wrap(acosf(1 / sqrtf(1 + powf((2 * xx - 1), 2) + powf((2 * yy - 1), 2))) / (float)M_PI, 1)) * pano_height;
-            memcpy(sky_u + (y * sky_w * 3 + x * 3), pano_buffer + (py * pano_width * pano_components + px * pano_components), 3);
+            syf = (float)(sky_w - sx) / (float)sky_w;
+            sxf = (float)(sky_h - sy) / (float)sky_h;
+            px = (fmodf_wrap(atan2f(1 - 2 * syf, 1 - 2 * sxf) / (2 * (float)M_PI), 1)) * pano_width;
+            py = (fmodf_wrap(acosf(1 / sqrtf(1 + powf((2 * sxf - 1), 2) + powf((2 * syf - 1), 2))) / (float)M_PI, 1)) * pano_height;
+            memcpy(sky_u + (sy * sky_w * 3 + sx * 3), pano_buffer + (py * pano_width * pano_components + px * pano_components), 3);
 
             //down
-            //yy = (float)(sky_w - x) / (float)sky_w;
-            //xx = (float)(sky_h - y) / (float)sky_h;
-            px = (fmodf_wrap(atan2f(1 - 2 * yy, 1 - 2 * xx) / (2 * (float)M_PI), 1)) * pano_width;
-            py = (fmodf_wrap(acosf(-1 / sqrtf(1 + powf((2 * xx - 1), 2) + powf((2 * yy - 1), 2))) / (float)M_PI, 1)) * pano_height;
-            memcpy(sky_d + (y * sky_w * 3 + x * 3), pano_buffer + (py * pano_width * pano_components + px * pano_components), 3);
+            //syf = (float)(sky_w - sx) / (float)sky_w;
+            //sxf = (float)(sky_h - sy) / (float)sky_h;
+            px = (fmodf_wrap(atan2f(1 - 2 * syf, 1 - 2 * sxf) / (2 * (float)M_PI), 1)) * pano_width;
+            py = (fmodf_wrap(acosf(-1 / sqrtf(1 + powf((2 * sxf - 1), 2) + powf((2 * syf - 1), 2))) / (float)M_PI, 1)) * pano_height;
+            memcpy(sky_d + (sy * sky_w * 3 + sx * 3), pano_buffer + (py * pano_width * pano_components + px * pano_components), 3);
 
         }
     }
