@@ -22,7 +22,16 @@ include_directories(/usr/lib/x86_64-linux-gnu/glib-2.0/include)
 link_directories(/usr/lib/)
 
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2")
+set(CMAKE_BUILD_TYPE "Release")
+#set(CMAKE_BUILD_TYPE "Debug")
+
+
+if( CMAKE_BUILD_TYPE STREQUAL "Debug" )
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -pg -Wall")
+else( CMAKE_BUILD_TYPE STREQUAL "Debug" )
+    set(CMAKE_BUILD_TYPE "Release")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2")
+endif( CMAKE_BUILD_TYPE STREQUAL "Debug" )
 
 add_executable(${PROJECT_NAME} ${SRC_LIST})
 
