@@ -173,7 +173,7 @@ main()
     //开始映射生成
     uint64_t    sky_w = sqrt(pano_width*pano_height/6.);
     uint64_t    sky_h = sky_w;
-    int         sky_quality = 100;
+    int         sky_quality = 50;
     JSAMPLE     *sky_f = malloc(sky_w * sky_h * 3);
     JSAMPLE     *sky_b = malloc(sky_w * sky_h * 3);
     JSAMPLE     *sky_l = malloc(sky_w * sky_h * 3);
