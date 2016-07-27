@@ -128,6 +128,17 @@ int main()
     JSAMPLE *pano_buffer=malloc(pano_width*pano_height*pano_components);
     JSAMPLE *pano_buffer_p=pano_buffer;
 
+#ifdef DEBUG
+    //初始化完毕计时
+    gettimeofday(&tpend,NULL);
+    timeuse=1000000*(tpend.tv_sec-tpstart.tv_sec)+tpend.tv_usec-tpstart.tv_usec;
+    timeuse/=1000000;
+    //输出耗时
+    fprintf(stderr,"初始化完毕计时: %fs\n",timeuse);
+    //重新计时开始
+    gettimeofday(&tpstart,NULL);
+#endif
+
     //开始读取
     while (cinfo.output_scanline < cinfo.output_height) {
         (void) jpeg_read_scanlines(&cinfo, buffer, 1);
@@ -152,12 +163,12 @@ int main()
     uint64_t sky_w=3353;
     uint64_t sky_h=sky_w;
     int sky_quality=100;
-    JSAMPLE *sky_1=malloc(sky_w*sky_h*3);
-    JSAMPLE *sky_2=malloc(sky_w*sky_h*3);
-    JSAMPLE *sky_3=malloc(sky_w*sky_h*3);
-    JSAMPLE *sky_4=malloc(sky_w*sky_h*3);
-    JSAMPLE *sky_5=malloc(sky_w*sky_h*3);
-    JSAMPLE *sky_6=malloc(sky_w*sky_h*3);
+    JSAMPLE *sky_f=malloc(sky_w*sky_h*3);
+    JSAMPLE *sky_b=malloc(sky_w*sky_h*3);
+    JSAMPLE *sky_l=malloc(sky_w*sky_h*3);
+    JSAMPLE *sky_r=malloc(sky_w*sky_h*3);
+    JSAMPLE *sky_u=malloc(sky_w*sky_h*3);
+    JSAMPLE *sky_d=malloc(sky_w*sky_h*3);
 
     int64_t x,y,px,py;
     double xx,yy;
@@ -166,45 +177,48 @@ int main()
     {
         for(y=0;y<sky_h;y++)
         {
-            //1
+            //front
             xx=(double)(sky_w-x)/(double)sky_w;
             yy=(double)(sky_h-y)/(double)sky_h;
             px=(fmod_wrap(atan2(1-2*xx, -1)/(2*M_PI),1))*pano_width;
             py=(fmod_wrap(acos((2*yy-1)/sqrt(1+pow((2*yy-1),2)+pow((2*xx-1),2)))/M_PI,1))*pano_height;
-            memcpy(sky_1+(y*sky_w*3+x*3),pano_buffer+(py*pano_width*pano_components+px*pano_components),3);
-            //2
+            memcpy(sky_f+(y*sky_w*3+x*3),pano_buffer+(py*pano_width*pano_components+px*pano_components),3);
+
+            //back
             xx=(double)(x)/(double)sky_w;
             yy=(double)(sky_h-y)/(double)sky_h;
             px=(fmod_wrap(atan2(1-2*xx, 1)/(2*M_PI),1))*pano_width;
             py=(fmod_wrap(acos((2*yy-1)/sqrt(1+pow((2*yy-1),2)+pow((2*xx-1),2)))/M_PI,1))*pano_height;
-            memcpy(sky_2+(y*sky_w*3+x*3),pano_buffer+(py*pano_width*pano_components+px*pano_components),3);
+            memcpy(sky_b+(y*sky_w*3+x*3),pano_buffer+(py*pano_width*pano_components+px*pano_components),3);
 
-            if(px<0)
-                printf("px:%d\n",px);
-
-            //3
-            yy=(double)(sky_w-x)/(double)sky_w;
-            xx=(double)(sky_h-y)/(double)sky_h;
-            px=(fmod_wrap(atan2(1-2*yy, 1-2*xx)/(2*M_PI),1))*pano_width;
-            py=(fmod_wrap(acos(1/sqrt(1+pow((2*xx-1),2)+pow((2*yy-1),2)))/M_PI,1))*pano_height;
-            memcpy(sky_3+(y*sky_w*3+x*3),pano_buffer+(py*pano_width*pano_components+px*pano_components),3);
-            //4
-            px=(fmod_wrap(atan2(1-2*yy, 1-2*xx)/(2*M_PI),1))*pano_width;
-            py=(fmod_wrap(acos(-1/sqrt(1+pow((2*xx-1),2)+pow((2*yy-1),2)))/M_PI,1))*pano_height;
-            memcpy(sky_4+(y*sky_w*3+x*3),pano_buffer+(py*pano_width*pano_components+px*pano_components),3);
-
-            //5
+            //left
             xx=(double)(x)/(double)sky_w;
             yy=(double)(sky_h-y)/(double)sky_h;
             px=(fmod_wrap(atan2(-1, 1-2*xx)/(2*M_PI),1))*pano_width;
             py=(fmod_wrap(acos((2*yy-1)/sqrt(1+pow((2*xx-1),2)+pow((2*yy-1),2)))/M_PI,1))*pano_height;
-            memcpy(sky_5+(y*sky_w*3+x*3),pano_buffer+(py*pano_width*pano_components+px*pano_components),3);
-            //6
+            memcpy(sky_l+(y*sky_w*3+x*3),pano_buffer+(py*pano_width*pano_components+px*pano_components),3);
+
+            //right
             xx=(double)(sky_w-x)/(double)sky_w;
             yy=(double)(sky_h-y)/(double)sky_h;
             px=(fmod_wrap(atan2(1, 1-2*xx)/(2*M_PI),1))*pano_width;
             py=(fmod_wrap(acos((2*yy-1)/sqrt(1+pow((2*xx-1),2)+pow((2*yy-1),2)))/M_PI,1))*pano_height;
-            memcpy(sky_6+(y*sky_w*3+x*3),pano_buffer+(py*pano_width*pano_components+px*pano_components),3);
+            memcpy(sky_r+(y*sky_w*3+x*3),pano_buffer+(py*pano_width*pano_components+px*pano_components),3);
+
+            //up
+            yy=(double)(sky_w-x)/(double)sky_w;
+            xx=(double)(sky_h-y)/(double)sky_h;
+            px=(fmod_wrap(atan2(1-2*yy, 1-2*xx)/(2*M_PI),1))*pano_width;
+            py=(fmod_wrap(acos(1/sqrt(1+pow((2*xx-1),2)+pow((2*yy-1),2)))/M_PI,1))*pano_height;
+            memcpy(sky_u+(y*sky_w*3+x*3),pano_buffer+(py*pano_width*pano_components+px*pano_components),3);
+
+            //down
+            yy=(double)(sky_w-x)/(double)sky_w;
+            xx=(double)(sky_h-y)/(double)sky_h;
+            px=(fmod_wrap(atan2(1-2*yy, 1-2*xx)/(2*M_PI),1))*pano_width;
+            py=(fmod_wrap(acos(-1/sqrt(1+pow((2*xx-1),2)+pow((2*yy-1),2)))/M_PI,1))*pano_height;
+            memcpy(sky_d+(y*sky_w*3+x*3),pano_buffer+(py*pano_width*pano_components+px*pano_components),3);
+
         }
     }
 
@@ -220,26 +234,12 @@ int main()
 #endif
 
     //开始保存
-    write_JPEG_file("f.jpg",sky_quality,sky_1,sky_w,sky_h);
-    write_JPEG_file("b.jpg",sky_quality,sky_2,sky_w,sky_h);
-    write_JPEG_file("u.jpg",sky_quality,sky_3,sky_w,sky_h);
-    write_JPEG_file("d.jpg",sky_quality,sky_4,sky_w,sky_h);
-    write_JPEG_file("l.jpg",sky_quality,sky_5,sky_w,sky_h);
-    write_JPEG_file("r.jpg",sky_quality,sky_6,sky_w,sky_h);
-
-    free(sky_1);
-    free(sky_2);
-    free(sky_3);
-    free(sky_4);
-    free(sky_5);
-    free(sky_6);
-    free(pano_buffer);
-    pano_buffer=0;
-    //========
-
-    (void) jpeg_finish_decompress(&cinfo);
-    jpeg_destroy_decompress(&cinfo);
-    fclose(infile);
+    write_JPEG_file("f.jpg",sky_quality,sky_f,sky_w,sky_h);
+    write_JPEG_file("b.jpg",sky_quality,sky_b,sky_w,sky_h);
+    write_JPEG_file("l.jpg",sky_quality,sky_l,sky_w,sky_h);
+    write_JPEG_file("r.jpg",sky_quality,sky_r,sky_w,sky_h);
+    write_JPEG_file("u.jpg",sky_quality,sky_u,sky_w,sky_h);
+    write_JPEG_file("d.jpg",sky_quality,sky_d,sky_w,sky_h);
 
 #ifdef DEBUG
     //保存结束
@@ -249,6 +249,18 @@ int main()
     //输出耗时
     fprintf(stderr,"保存完毕计时: %fs\n",timeuse);
 #endif
+
+    free(sky_f);
+    free(sky_b);
+    free(sky_l);
+    free(sky_r);
+    free(sky_u);
+    free(sky_d);
+    free(pano_buffer);pano_buffer=0;
+
+    (void) jpeg_finish_decompress(&cinfo);
+    jpeg_destroy_decompress(&cinfo);
+    fclose(infile);
 
     return 0;
 }
