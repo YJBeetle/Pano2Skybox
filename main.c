@@ -93,7 +93,7 @@ main()
 {
 
 #ifdef DEBUG
-    //计时��63始
+    //计时开始
     struct timeval    tpstart, tpend;
     float        timeuse;
     gettimeofday(&tpstart, NULL);
@@ -142,13 +142,13 @@ main()
     gettimeofday(&tpend, NULL);
     timeuse = 1000000 * (tpend.tv_sec - tpstart.tv_sec) + tpend.tv_usec - tpstart.tv_usec;
     timeuse /= 1000000;
-    //输出�63�时
+    //输出耗时
     fprintf(stderr, "初始化完毕计时: %fs\n", timeuse);
-    //重新计时��63始
+    //重新计时开始
     gettimeofday(&tpstart, NULL);
 #endif
 
-    //��63始读取
+    //开始读取
     while (cinfo.output_scanline < cinfo.output_height) {
         (void)jpeg_read_scanlines(&cinfo, buffer, 1);
         memcpy(pano_buffer_p, buffer[0], row_stride);
@@ -162,13 +162,13 @@ main()
     gettimeofday(&tpend, NULL);
     timeuse = 1000000 * (tpend.tv_sec - tpstart.tv_sec) + tpend.tv_usec - tpstart.tv_usec;
     timeuse /= 1000000;
-    //输出�63�时
+    //输出耗时
     fprintf(stderr, "读取完毕计时: %fs\n", timeuse);
-    //重新计时��63始
+    //重新计时开始
     gettimeofday(&tpstart, NULL);
 #endif
 
-    //��63始映射生成
+    //开始映射生成
     uint64_t sky_w = 3353;
     uint64_t    sky_h = sky_w;
     int        sky_quality = 100;
@@ -234,13 +234,13 @@ main()
     gettimeofday(&tpend, NULL);
     timeuse = 1000000 * (tpend.tv_sec - tpstart.tv_sec) + tpend.tv_usec - tpstart.tv_usec;
     timeuse /= 1000000;
-    //输出�63�时
+    //输出耗时
     fprintf(stderr, "生成完毕计时: %fs\n", timeuse);
-    //重新计时��63始
+    //重新计时开始
     gettimeofday(&tpstart, NULL);
 #endif
 
-    //��63始保存
+    //开始保存
     write_JPEG_file("f.jpg", sky_quality, sky_f, sky_w, sky_h);
     write_JPEG_file("b.jpg", sky_quality, sky_b, sky_w, sky_h);
     write_JPEG_file("l.jpg", sky_quality, sky_l, sky_w, sky_h);
@@ -253,7 +253,7 @@ main()
     gettimeofday(&tpend, NULL);
     timeuse = 1000000 * (tpend.tv_sec - tpstart.tv_sec) + tpend.tv_usec - tpstart.tv_usec;
     timeuse /= 1000000;
-    //输出�63�时
+    //输出耗时
     fprintf(stderr, "保存完毕计时: %fs\n", timeuse);
 #endif
 
