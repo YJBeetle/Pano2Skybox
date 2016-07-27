@@ -21,7 +21,12 @@ include_directories(/usr/include/)
 include_directories(/usr/lib/x86_64-linux-gnu/glib-2.0/include)
 link_directories(/usr/lib/)
 
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2")
+
 add_executable(${PROJECT_NAME} ${SRC_LIST})
 
 target_link_libraries(${PROJECT_NAME} jpeg)
+
+
 
