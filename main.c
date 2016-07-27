@@ -197,23 +197,23 @@ main()
 
             //back
             xx = (float)(x) / (float)sky_w;
-            yy = (float)(sky_h - y) / (float)sky_h;
+            //yy = (float)(sky_h - y) / (float)sky_h;
             px = (fmodf_wrap(atan2f(1 - 2 * xx, 1) / (2 * (float)M_PI), 1)) * pano_width;
-            py = (fmodf_wrap(acosf((2 * yy - 1) / sqrtf(1 + powf((2 * yy - 1), 2) + powf((2 * xx - 1), 2))) / (float)M_PI, 1)) * pano_height;
+            //py = (fmodf_wrap(acosf((2 * yy - 1) / sqrtf(1 + powf((2 * yy - 1), 2) + powf((2 * xx - 1), 2))) / (float)M_PI, 1)) * pano_height;
             memcpy(sky_b + (y * sky_w * 3 + x * 3), pano_buffer + (py * pano_width * pano_components + px * pano_components), 3);
 
             //left
-            xx = (float)(x) / (float)sky_w;
-            yy = (float)(sky_h - y) / (float)sky_h;
+            //xx = (float)(x) / (float)sky_w;
+            //yy = (float)(sky_h - y) / (float)sky_h;
             px = (fmodf_wrap(atan2f(-1, 1 - 2 * xx) / (2 * (float)M_PI), 1)) * pano_width;
             py = (fmodf_wrap(acosf((2 * yy - 1) / sqrtf(1 + powf((2 * xx - 1), 2) + powf((2 * yy - 1), 2))) / (float)M_PI, 1)) * pano_height;
             memcpy(sky_l + (y * sky_w * 3 + x * 3), pano_buffer + (py * pano_width * pano_components + px * pano_components), 3);
 
             //right
             xx = (float)(sky_w - x) / (float)sky_w;
-            yy = (float)(sky_h - y) / (float)sky_h;
+            //yy = (float)(sky_h - y) / (float)sky_h;
             px = (fmodf_wrap(atan2f(1, 1 - 2 * xx) / (2 * (float)M_PI), 1)) * pano_width;
-            py = (fmodf_wrap(acosf((2 * yy - 1) / sqrtf(1 + powf((2 * xx - 1), 2) + powf((2 * yy - 1), 2))) / (float)M_PI, 1)) * pano_height;
+            //py = (fmodf_wrap(acosf((2 * yy - 1) / sqrtf(1 + powf((2 * xx - 1), 2) + powf((2 * yy - 1), 2))) / (float)M_PI, 1)) * pano_height;
             memcpy(sky_r + (y * sky_w * 3 + x * 3), pano_buffer + (py * pano_width * pano_components + px * pano_components), 3);
 
             //up
@@ -224,8 +224,8 @@ main()
             memcpy(sky_u + (y * sky_w * 3 + x * 3), pano_buffer + (py * pano_width * pano_components + px * pano_components), 3);
 
             //down
-            yy = (float)(sky_w - x) / (float)sky_w;
-            xx = (float)(sky_h - y) / (float)sky_h;
+            //yy = (float)(sky_w - x) / (float)sky_w;
+            //xx = (float)(sky_h - y) / (float)sky_h;
             px = (fmodf_wrap(atan2f(1 - 2 * yy, 1 - 2 * xx) / (2 * (float)M_PI), 1)) * pano_width;
             py = (fmodf_wrap(acosf(-1 / sqrtf(1 + powf((2 * xx - 1), 2) + powf((2 * yy - 1), 2))) / (float)M_PI, 1)) * pano_height;
             memcpy(sky_d + (y * sky_w * 3 + x * 3), pano_buffer + (py * pano_width * pano_components + px * pano_components), 3);
