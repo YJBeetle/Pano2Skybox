@@ -50,6 +50,7 @@ float pow2f(const float d)
 }
 
 
+
 struct my_error_mgr {
     struct jpeg_error_mgr pub;    /* "public" fields */
     jmp_buf        setjmp_buffer;    /* for return to caller */
@@ -119,21 +120,20 @@ main()
 {
 
 #ifdef DEBUG
-    //计时开始
+    //计时
     struct timeval    tpstart, tpend;
     float        timeuse;
-    gettimeofday(&tpstart, NULL);
 #endif
 
     char           *filename = "a.jpg";
 
     FILE           *infile;    /* source file */
     JSAMPARRAY    buffer;    /* Output row buffer */
-    int        row_stride;    /* physical row width in output
-                     * buffer */
+    int        row_stride;    /* physical row width in output buffer */
 
+    //文件检查
     if ((infile = fopen(filename, "rb")) == NULL) {
-        fprintf(stderr, "can't open %s\n", filename);
+        fprintf(stderr, "文件不存在： %s \n", filename);
         return 1;
     }
     struct jpeg_decompress_struct cinfo;
@@ -166,13 +166,7 @@ main()
     printf("Pano图片大小： %dpx x %dpx \n",pano_width,pano_height);
 
 #ifdef DEBUG
-    //初始化完毕计时
-    gettimeofday(&tpend, NULL);
-    timeuse = 1000000 * (tpend.tv_sec - tpstart.tv_sec) + tpend.tv_usec - tpstart.tv_usec;
-    timeuse /= 1000000;
-    //输出耗时
-    fprintf(stderr, "初始化完毕计时: %fs\n", timeuse);
-    //重新计时开始
+    //计时开始
     gettimeofday(&tpstart, NULL);
 #endif
 
