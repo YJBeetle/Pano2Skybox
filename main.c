@@ -25,16 +25,18 @@ fmodf_wrap(const float v, const float w)
 
 int sgn(const double d)
 {
-    if(d<0) return -1;
-    else if (d==0) return 0;
-    else return 1;
+//    if(d<0) return -1;
+//    else if (d==0) return 0;
+//    else return 1;
+    return (d>0)?(1):((d==0)?(0):(-1));
 }
 
 int sgnf(const float d)
 {
-    if(d<0) return -1;
-    else if (d==0) return 0;
-    else return 1;
+//    if(d<0) return -1;
+//    else if (d==0) return 0;
+//    else return 1;
+    return (d>0)?(1):((d==0)?(0):(-1));
 }
 
 struct my_error_mgr {
@@ -209,7 +211,7 @@ main()
 
             //front
             //xx//pxf = (fmodf_wrap(atan2f(1 - 2 * sxf, -1) / (2 * (float)M_PI), 1)) ;
-            pxf = fmodf_wrap((atanf((2 * sxf) - 1) + ((2 * sgnf(1 - 2 * sxf)) * (float)M_PI_2)) / (2 * (float)M_PI),1);
+            pxf = fmodf_wrap((atanf((2 * sxf) - 1) + ((2 * sgnf(1 - 2 * sxf)) * (float)M_PI_2)) / (2 * (float)M_PI), 1);
             px = pxf * pano_width;
             pyf = (fmodf_wrap(acosf((2 * syf - 1) / sqrtf(1 + powf((2 * syf - 1), 2) + powf((2 * sxf - 1), 2))) / (float)M_PI, 1)) ;
             py = pyf * pano_height;
@@ -225,7 +227,7 @@ main()
 
             //back
             //xx//pxf = (fmodf_wrap(atan2f(1 - 2 * sxf, 1) / (2 * (float)M_PI), 1)) ;
-            pxf = fmodf_wrap(atan(1 - 2 * sxf) / (2 * (float)M_PI),1);
+            pxf = fmodf_wrap(atanf(1 - 2 * sxf) / (2 * (float)M_PI), 1);
             px = pxf * pano_width;
             //pyf = (fmodf_wrap(acosf((2 * syf - 1) / sqrtf(1 + powf((2 * syf - 1), 2) + powf((2 * sxf - 1), 2))) / (float)M_PI, 1)) ;
             //py = pyf * pano_height;
@@ -240,7 +242,9 @@ main()
                        * pano_components), 3);
 
             //left
-            pxf = (fmodf_wrap(atan2f(-1, 1 - 2 * sxf) / (2 * (float)M_PI), 1)) ;
+            //aa//pxf = (fmodf_wrap(atan2f(-1, 1 - 2 * sxf) / (2 * (float)M_PI), 1)) ;
+            //pxf = fmodf_wrap((((sgnf(1 - 2 * sxf) - 1) * (float)M_PI_2) - atanf(1 / (1 - 2 * sxf))) / (2 * (float)M_PI),1);
+            pxf = fmodf_wrap(((-atanf(1 / (((-2) * sxf) + 1))) + (((-1) + sgn(((-2) * sxf) + 1)) * (float)M_PI_2)) / ((2 * (float)M_PI)),1);
             px = pxf * pano_width;
             pyf = (fmodf_wrap(acosf((2 * syf - 1) / sqrtf(1 + powf((2 * sxf - 1), 2) + powf((2 * syf - 1), 2))) / (float)M_PI, 1)) ;
             py = pyf * pano_height;
@@ -255,7 +259,9 @@ main()
                        * pano_components), 3);
 
             //right
-            pxf = (fmodf_wrap(atan2f(1, 1 - 2 * sxf) / (2 * (float)M_PI), 1)) ;
+            //xx//pxf = (fmodf_wrap(atan2f(1, 1 - 2 * sxf) / (2 * (float)M_PI), 1)) ;
+            pxf = fmodf_wrap((((1 - sgnf(1 - 2 * sxf)) * (float)M_PI_2) + atanf(1 / (1 - 2 * sxf))) / (2 * (float)M_PI), 1);
+            //pxf = fmodf_wrap((atanf(1 / (((-2) * sxf) + 1)) + ((1 - sgnf(((-2) * sxf) + 1)) * (float)M_PI_2)) / ((2 * (float)M_PI)),1);
             px = pxf * pano_width;
             //pyf = (fmodf_wrap(acosf((2 * syf - 1) / sqrtf(1 + powf((2 * sxf - 1), 2) + powf((2 * syf - 1), 2))) / (float)M_PI, 1)) ;
             //py = pyf * pano_height;
@@ -270,7 +276,8 @@ main()
                        * pano_components), 3);
 
             //up
-            pxf = (fmodf_wrap(atan2f(1 - 2 * syf, 1 - 2 * sxf) / (2 * (float)M_PI), 1)) ;
+            //xx//pxf = (fmodf_wrap(atan2f(1 - 2 * syf, 1 - 2 * sxf) / (2 * (float)M_PI), 1)) ;
+            pxf = fmodf_wrap((atanf((1 - 2 * syf) / (1 - 2 * sxf)) + ((1 - sgnf(1 - 2 * sxf)) * sgnf(1 - 2 * syf) * (float)M_PI_2)) / (2 * (float)M_PI), 1);
             px = pxf * pano_width;
             pyf = (fmodf_wrap(acosf(1 / sqrtf(1 + powf((2 * sxf - 1), 2) + powf((2 * syf - 1), 2))) / (float)M_PI, 1)) ;
             py = pyf * pano_height;
